@@ -1,7 +1,10 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config(); // Memuat variabel dari .env
 
 export const connectDB = async () => {
-    await mongoose.connect(
-      'mongodb+srv://fooddel:237006090@cluster0.urpw0.mongodb.net/?'
-    ).then(()=>console.log("DB Connected"));
+    await mongoose.connect(process.env.MONGODB_URI)
+        .then(() => console.log("DB Connected"))
+        .catch(err => console.error("DB Connection Error:", err));
 }
