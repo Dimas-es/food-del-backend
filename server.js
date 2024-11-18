@@ -6,6 +6,8 @@ import userRouter from "./routes/userRoute.js"
 import 'dotenv/config'
 import cartRouter from "./routes/cartRoute.js"
 import orderRouter from "./routes/orderRoute.js"
+import helmet from 'helmet'
+import mongoSanitize from 'express-mongo-sanitize'
 
 
 
@@ -15,6 +17,8 @@ const app = express()
 const port = process.env.PORT || 4000
 
 // middleware
+app.use(helmet())
+app.use(mongoSanitize())
 app.use(express.json())
 app.use(cors());
 
