@@ -16,7 +16,15 @@ const port = process.env.PORT || 4000
 
 // middleware
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+    origin: [
+        "http://localhost:3000", // Frontend saat development
+        "https://food-del-store.vercel.app" // Frontend di production
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization", "token"]
+}));
 
 // db connection
 connectDB();
@@ -36,5 +44,3 @@ app.listen(port,()=>{
     console.log(`Server Started on http://localhost:${port}`)
 })
 
-
-// mongodb+srv://fooddel:237006090@cluster0.urpw0.mongodb.net/?
