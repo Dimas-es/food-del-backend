@@ -18,7 +18,7 @@ const port = process.env.PORT || 4000
 app.use(express.json())
 app.use(cors({
     origin: [
-        "http://localhost:3000", // Frontend saat development
+        "http://localhost:3000", // Frontend saat developmentapp.use(cors())
         "https://food-del-store.vercel.app" // Frontend di production
     ],
     credentials: true,
