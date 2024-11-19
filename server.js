@@ -20,7 +20,10 @@ app.use(express.json())
 
 // Configure CORS for only your frontend
 app.use(cors({
-  origin: 'https://food-del-store.vercel.app', // Ganti dengan URL frontend Anda
+  origin: [
+    'https://food-del-store.vercel.app',  // Frontend
+    'https://food-del-admin-olive.vercel.app'  // Admin
+  ],
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
