@@ -5,7 +5,7 @@ import path from "path";
 // Tambahkan food
 const addFood = async (req, res) => {
   try {
-    let image_filename = req.file.filename;
+    let image_filename = req.file.filename; // Pastikan file image berhasil diupload
 
     const food = new foodModel({
       name: req.body.name,
@@ -42,9 +42,10 @@ const removeFood = async (req, res) => {
       return res.json({ success: false, message: "Food not found" });
     }
 
+    // Menghapus file gambar jika ada
     const filePath = path.resolve("uploads", food.image);
     if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
+      fs.unlinkSync(filePath); // Menghapus file
     }
 
     await foodModel.findByIdAndDelete(req.body.id);
