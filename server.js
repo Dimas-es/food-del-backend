@@ -20,7 +20,7 @@ app.use(express.json())
 
 // Configure CORS for only your frontend
 app.use(cors({
-  origin: 'http://localhost:5173', // Ganti dengan URL frontend Anda
+  origin: '*', // Ganti dengan URL frontend Anda
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
