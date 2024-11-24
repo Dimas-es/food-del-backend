@@ -18,15 +18,12 @@ app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
-        defaultSrc: ["'self'"], // Izinkan sumber dari server sendiri
-        scriptSrc: ["'self'", "https://vercel.live"], // Izinkan script dari vercel.live
-        imgSrc: ["'self'", "https://food-del-backend-omega.vercel.app"], // Izinkan gambar dari domain tertentu
-        connectSrc: ["'self'", "https://vercel.live"], // Izinkan koneksi ke vercel.live
-        styleSrc: ["'self'", "'unsafe-inline'"], // Izinkan inline styles
-        fontSrc: ["'self'"], // Izinkan font dari server sendiri
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "https://vercel.live"],
+        imgSrc: ["'self'", "data:", "https://food-del-backend-omega.vercel.app"],
+        connectSrc: ["'self'", "https://food-del-backend-omega.vercel.app"],
       },
     },
-    crossOriginEmbedderPolicy: false, // Untuk menangani masalah terkait resource lain
   })
 );
 app.use(mongoSanitize());
