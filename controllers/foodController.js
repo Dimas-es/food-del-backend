@@ -2,57 +2,51 @@ import foodModel from "../models/foodModel.js";
 import fs from "fs";
 import path from "path";
 
-// Tambahkan food
 const addFood = async (req, res) => {
   try {
-    let image_filename = req.file.filename; // Pastikan file image berhasil diupload
+    if (!req.file) throw new Error("Image is required");
 
     const food = new foodModel({
       name: req.body.name,
       description: req.body.description,
       price: req.body.price,
       category: req.body.category,
-      image: image_filename,
+      image: req.file.filename,
     });
 
     await food.save();
-    res.json({ success: true, message: "Food Added" });
+    res.status(201).json({ success: true, message: "Food Added" });
   } catch (error) {
-    console.error(error);
-    res.json({ success: false, message: "Error adding food" });
+    console.error("Error in addFood:", error.message);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// Daftar semua makanan
 const listFood = async (req, res) => {
   try {
     const foods = await foodModel.find({});
-    res.json({ success: true, data: foods });
+    res.status(200).json({ success: true, data: foods });
   } catch (error) {
-    console.error(error);
-    res.json({ success: false, message: "Error fetching food list" });
+    console.error("Error in listFood:", error.message);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// Hapus makanan
 const removeFood = async (req, res) => {
   try {
     const food = await foodModel.findById(req.body.id);
-    if (!food) {
-      return res.json({ success: false, message: "Food not found" });
-    }
+    if (!food) throw new Error("Food not found");
 
-    // Menghapus file gambar jika ada
     const filePath = path.resolve("uploads", food.image);
     if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath); // Menghapus file
+      fs.unlinkSync(filePath);
     }
 
     await foodModel.findByIdAndDelete(req.body.id);
-    res.json({ success: true, message: "Food Removed" });
+    res.status(200).json({ success: true, message: "Food Removed" });
   } catch (error) {
-    console.error(error);
-    res.json({ success: false, message: "Error removing food" });
+    console.error("Error in removeFood:", error.message);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 

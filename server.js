@@ -6,27 +6,27 @@ import userRouter from "./routes/userRoute.js";
 import "dotenv/config";
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
-import helmet from "helmet";
-import mongoSanitize from "express-mongo-sanitize";
+// import helmet from "helmet";
+// import mongoSanitize from "express-mongo-sanitize";
 
 // App Config
 const app = express();
 const port = process.env.PORT || 4000;
 
 // Middleware
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "https://vercel.live"],
-        imgSrc: ["'self'", "data:", "https://food-del-backend-omega.vercel.app"],
-        connectSrc: ["'self'", "https://food-del-backend-omega.vercel.app"],
-      },
-    },
-  })
-);
-app.use(mongoSanitize());
+// app.use(
+//   helmet({
+//     contentSecurityPolicy: {
+//       directives: {
+//         defaultSrc: ["'self'"],
+//         scriptSrc: ["'self'", "https://vercel.live"],
+//         imgSrc: ["'self'", "data:", "https://food-del-backend-omega.vercel.app"],
+//         connectSrc: ["'self'", "https://food-del-backend-omega.vercel.app"],
+//       },
+//     },
+//   })
+// );
+// app.use(mongoSanitize());
 app.use(express.json());
 
 // Configure CORS
