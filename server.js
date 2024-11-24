@@ -3,69 +3,77 @@ import cors from "cors";
 import { connectDB } from "./config/db.js";
 import foodRouter from "./routes/foodRoute.js";
 import userRouter from "./routes/userRoute.js";
-import 'dotenv/config';
+import "dotenv/config";
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
+import helmet from "helmet";
+import mongoSanitize from "express-mongo-sanitize";
 
+// App Config
 const app = express();
 const port = process.env.PORT || 4000;
 
-// middleware
+// Middleware
+app.use(helmet());
+app.use(mongoSanitize());
 app.use(express.json());
 
-// Content-Security-Policy Header untuk mengizinkan skrip dan gambar dari domain tertentu
+// Configure CORS
+const allowedOrigins = [
+  "https://food-del-store.vercel.app", // Frontend
+  "https://food-del-admin-olive.vercel.app", // Admin
+];
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // Allow cookies if needed
+  })
+);
+
+// Add Cross-Origin-Resource-Policy header
 app.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", `
-    default-src 'self';
-    script-src 'self' https://food-del-store.vercel.app https://food-del-admin-olive.vercel.app https://vercel.live;
-    script-src-elem 'self' https://vercel.live;
-    img-src 'self' https://food-del-store.vercel.app https://food-del-admin-olive.vercel.app https://food-del-backend-omega.vercel.app data:;
-    style-src 'self' 'unsafe-inline' https://food-del-store.vercel.app https://food-del-admin-olive.vercel.app;
-    connect-src 'self' https://food-del-backend-omega.vercel.app;
-    font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;
-    frame-src 'none';
-  `);
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
   next();
 });
 
-// Configure CORS for only your frontend
-app.use(cors({
-  origin: function (origin, callback) {
-    const allowedOrigins = [
-      'https://food-del-store.vercel.app',
-      'https://food-del-admin-olive.vercel.app',
-      'http://localhost:3000' // Tambahkan jika perlu untuk pengembangan lokal
-    ];
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+// Database Connection
+try {
+  connectDB();
+  console.log("Database connected successfully");
+} catch (error) {
+  console.error("Database connection failed:", error.message);
+}
 
-// Add CORP header to all responses
-app.use((req, res, next) => {
-  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');  // Atau 'same-origin' jika diperlukan
-  next();
-});
-
-// db connection
-connectDB();
-
-// api endpoints
+// API Endpoints
 app.use("/api/food", foodRouter);
-app.use("/images", express.static('uploads'));  // static folder for images
+app.use("/images", (req, res, next) => {
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+  next();
+}, express.static("uploads")); // Static folder for images
 app.use("/api/user", userRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
 
+// Base Route
 app.get("/", (req, res) => {
   res.send("API Working");
 });
 
+// Error Handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: err.message });
+});
+
+// Start Server
 app.listen(port, () => {
-  console.log(`Server Started on http://localhost:${port}`);
+  console.log(`Server started on http://localhost:${port}`);
 });
