@@ -16,12 +16,13 @@ app.use(express.json());
 // Content-Security-Policy Header untuk mengizinkan skrip dan gambar dari domain tertentu
 app.use((req, res, next) => {
   res.setHeader("Content-Security-Policy", `
-    default-src 'none';
+    default-src 'self';
     script-src 'self' https://food-del-store.vercel.app https://food-del-admin-olive.vercel.app https://vercel.live;
-    img-src 'self' https://food-del-backend-omega.vercel.app https://food-del-store.vercel.app https://food-del-admin-olive.vercel.app;
-    style-src 'self' https://food-del-store.vercel.app https://food-del-admin-olive.vercel.app;
-    connect-src 'self';
-    font-src 'self';
+    script-src-elem 'self' https://vercel.live;
+    img-src 'self' https://food-del-store.vercel.app https://food-del-admin-olive.vercel.app https://food-del-backend-omega.vercel.app data:;
+    style-src 'self' 'unsafe-inline' https://food-del-store.vercel.app https://food-del-admin-olive.vercel.app;
+    connect-src 'self' https://food-del-backend-omega.vercel.app;
+    font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;
     frame-src 'none';
   `);
   next();
