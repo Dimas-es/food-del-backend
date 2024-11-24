@@ -14,14 +14,26 @@ const app = express();
 const port = process.env.PORT || 4000;
 
 // Middleware
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "https://vercel.live"],
+        imgSrc: ["'self'", "data:", "https://food-del-backend-omega.vercel.app"],
+        connectSrc: ["'self'", "https://food-del-backend-omega.vercel.app"],
+      },
+    },
+  })
+);
 app.use(mongoSanitize());
 app.use(express.json());
 
 // Configure CORS
 const allowedOrigins = [
-  "https://food-del-store.vercel.app", // Frontend
-  "https://food-del-admin-olive.vercel.app", // Admin
+  "https://food-del-store.vercel.app",
+  "https://food-del-admin-olive.vercel.app",
+  "http://localhost:3000",
 ];
 app.use(
   cors({
@@ -34,30 +46,16 @@ app.use(
     },
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true, // Allow cookies if needed
+    credentials: true,
   })
 );
 
-// Add Cross-Origin-Resource-Policy header
-app.use((req, res, next) => {
-  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-  next();
-});
-
 // Database Connection
-try {
-  connectDB();
-  console.log("Database connected successfully");
-} catch (error) {
-  console.error("Database connection failed:", error.message);
-}
+connectDB();
 
 // API Endpoints
 app.use("/api/food", foodRouter);
-app.use("/images", (req, res, next) => {
-  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-  next();
-}, express.static("uploads")); // Static folder for images
+app.use("/images", express.static("uploads"));
 app.use("/api/user", userRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
