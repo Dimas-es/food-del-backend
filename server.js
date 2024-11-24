@@ -33,7 +33,7 @@ app.use(express.json());
 const allowedOrigins = [
   "https://food-del-store.vercel.app",
   "https://food-del-admin-olive.vercel.app",
-  "http://localhost:3000",
+  "http://localhost:4000",
 ];
 app.use(
   cors({
