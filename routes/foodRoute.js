@@ -3,7 +3,7 @@ import { addFood, listFood, removeFood } from "../controllers/foodController.js"
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import authMiddleware from "../middleware/auth.js"; // Pastikan authMiddleware benar
+// import  from "../middleware/auth.js"; // Pastikan  benar
 
 const foodRouter = express.Router();
 
@@ -41,7 +41,7 @@ const upload = multer({
 });
 
 // Route untuk menambahkan makanan
-foodRouter.post("/add", authMiddleware, upload.single("image"), async (req, res, next) => {
+foodRouter.post("/add",  upload.single("image"), async (req, res, next) => {
   try {
     console.log("Request Body:", req.body); // Debugging
     console.log("Uploaded File:", req.file); // Debugging
@@ -64,7 +64,7 @@ foodRouter.get("/list", async (req, res, next) => {
 });
 
 // Route untuk menghapus makanan
-foodRouter.post("/remove", authMiddleware, async (req, res, next) => {
+foodRouter.post("/remove", async (req, res, next) => {
   try {
     await removeFood(req, res); // Panggil controller
   } catch (error) {
